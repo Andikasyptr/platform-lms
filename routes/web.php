@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite; // WAJIB untuk Google Login
 use App\Models\User;                    // WAJIB untuk akses tabel User
 use Illuminate\Support\Facades\Auth;    // WAJIB untuk proses login
+use App\Models\Classroom;
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboard;
@@ -21,10 +22,14 @@ use App\Http\Controllers\Student\ClassroomController as StudentClassroom;
 
 
 // 1. HALAMAN UTAMA (WELCOME)
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
-
+Route::get('/', function () {
+    return Inertia::render('welcome', [
+        'canRegister' => Features::enabled(Features::registration()),
+        'totalTeachers' => User::where('role', 'teacher')->count(),
+        'totalStudents' => User::where('role', 'student')->count(),
+        'totalActiveClasses' => Classroom::count(),
+    ]);
+})->name('home');
 Route::get('/auth/google/redirect', function () {
     return Socialite::driver('google')->redirect();
 })->name('google.redirect');

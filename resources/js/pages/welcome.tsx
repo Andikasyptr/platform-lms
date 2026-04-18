@@ -4,6 +4,7 @@ import { useState } from 'react'; // Tambahkan useState untuk menu mobile
 import { 
     LayoutDashboard, 
     Zap, 
+    User, // Icon User untuk Guru
     ShieldCheck, 
     ArrowRight,
     GraduationCap,
@@ -15,7 +16,20 @@ import {
     X // Icon Close
 } from 'lucide-react';
 
-export default function Welcome({ canRegister = true }: { canRegister?: boolean }) {
+// UPDATE: Tambahkan interface untuk menerima data dari database
+interface WelcomeProps {
+    canRegister?: boolean;
+    totalTeachers: number;
+    totalStudents: number;
+    totalActiveClasses: number;
+}
+
+export default function Welcome({ 
+    canRegister = true,
+    totalTeachers = 0,     // Default value jika data belum ada
+    totalStudents = 0,     // Default value jika data belum ada
+    totalActiveClasses = 0 // Default value jika data belum ada
+}: WelcomeProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -143,33 +157,41 @@ export default function Welcome({ canRegister = true }: { canRegister?: boolean 
                                         <p className="text-xs md:text-sm text-neutral-400 font-medium">Monitoring performa sekolah secara real-time.</p>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                                        {/* Total Guru - Icon DIGANTI ke User */}
                                         <div className="p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] bg-white dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 shadow-sm relative group">
                                             <div className="flex justify-between items-start mb-4 md:mb-6">
-                                                <div className="p-3 md:p-4 bg-indigo-500/10 rounded-2xl"><Globe className="size-5 md:size-6 text-indigo-600" /></div>
+                                                <div className="p-3 md:p-4 bg-indigo-500/10 rounded-2xl"><User className="size-5 md:size-6 text-indigo-600" /></div>
                                                 <div className="px-3 py-1 bg-emerald-500/10 text-[8px] md:text-[10px] font-black text-emerald-600 rounded-full flex items-center gap-1.5 ring-1 ring-emerald-500/20">
                                                     LIVE
                                                 </div>
                                             </div>
                                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-1">Total Guru</p>
                                             <div className="flex items-baseline gap-2">
-                                                <span className="text-3xl md:text-5xl font-display font-black dark:text-white">39</span>
+                                                <span className="text-3xl md:text-5xl font-display font-black dark:text-white">
+                                                    {totalTeachers}
+                                                </span>
                                                 <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">Personel</span>
                                             </div>
                                         </div>
-                                        {/* Items 2 & 3 for mobile layout */}
+                                        {/* Total Siswa - Icon Pakai GraduationCap */}
                                         <div className="p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] bg-white dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 shadow-sm">
-                                            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-emerald-500/10 rounded-2xl w-fit"><CheckCircle2 className="size-5 md:size-6 text-emerald-600" /></div>
+                                            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-emerald-500/10 rounded-2xl w-fit"><GraduationCap className="size-5 md:size-6 text-emerald-600" /></div>
                                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-1">Total Siswa</p>
                                             <div className="flex items-baseline gap-2">
-                                                <span className="text-3xl md:text-5xl font-display font-black dark:text-white">532</span>
+                                                <span className="text-3xl md:text-5xl font-display font-black dark:text-white">
+                                                    {totalStudents}
+                                                </span>
                                                 <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">Siswa</span>
                                             </div>
                                         </div>
+                                        {/* Kelas Aktif - Icon Pakai CheckCircle2 atau ShieldCheck */}
                                         <div className="p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] bg-white dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 shadow-sm">
-                                            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-amber-500/10 rounded-2xl w-fit"><GraduationCap className="size-5 md:size-6 text-amber-600" /></div>
+                                            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-amber-500/10 rounded-2xl w-fit"><CheckCircle2 className="size-5 md:size-6 text-amber-600" /></div>
                                             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-1">Kelas Aktif</p>
                                             <div className="flex items-baseline gap-2">
-                                                <span className="text-3xl md:text-5xl font-display font-black dark:text-white">38</span>
+                                                <span className="text-3xl md:text-5xl font-display font-black dark:text-white">
+                                                    {totalActiveClasses}
+                                                </span>
                                                 <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">Ruangan</span>
                                             </div>
                                         </div>
