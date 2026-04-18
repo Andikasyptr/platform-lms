@@ -20,7 +20,8 @@ class User extends Authenticatable
         'password', 
         'current_team_id', 
         'role',
-        'classroom_id' // Tambahkan ini jika user/siswa punya classroom_id
+        'classroom_id',
+        'google_id' // Tambahkan ini jika user/siswa punya classroom_id
     ];
 
     protected $hidden = [

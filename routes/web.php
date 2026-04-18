@@ -5,6 +5,9 @@ use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Inertia\Inertia;
+use Laravel\Socialite\Facades\Socialite; // WAJIB untuk Google Login
+use App\Models\User;                    // WAJIB untuk akses tabel User
+use Illuminate\Support\Facades\Auth;    // WAJIB untuk proses login
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboard;
@@ -21,6 +24,42 @@ use App\Http\Controllers\Student\ClassroomController as StudentClassroom;
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
+
+Route::get('/auth/google/redirect', function () {
+    return Socialite::driver('google')->redirect();
+})->name('google.redirect');
+
+Route::get('/auth/google/callback', function () {
+    try {
+        $googleUser = Socialite::driver('google')->user();
+    } catch (\Exception $e) {
+        return redirect('/login')->with('error', 'Gagal masuk dengan Google.');
+    }
+
+    // Cari user berdasarkan email
+    $user = User::where('email', $googleUser->email)->first();
+
+    if (!$user) {
+        // Jika user baru, buat akun baru
+        $user = User::create([
+            'name' => $googleUser->name,
+            'email' => $googleUser->email,
+            'google_id' => $googleUser->id,
+            'password' => bcrypt(str()->random(24)),
+            'role' => 'student', // SET DEFAULT ROLE sebagai student (siswa)
+        ]);
+    } else {
+        // Jika user lama tapi baru pertama kali pakai google login, update ID-nya
+        if (!$user->google_id) {
+            $user->update(['google_id' => $googleUser->id]);
+        }
+    }
+
+    Auth::login($user);
+
+    // redirect() intended akan mengirim user ke logic redirect dashboard di bawah
+    return redirect()->intended('/dashboard');
+});
 
 // 2. ROUTE GRUP DENGAN AUTH
 Route::middleware(['auth', 'verified'])->group(function () {
