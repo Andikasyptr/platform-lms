@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 
 // IMPORT CKEDITOR
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+// @ts-ignore
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 // --- CUSTOM UPLOAD ADAPTER UNTUK CKEDITOR ---
