@@ -29,7 +29,7 @@ export default function Login({
     };
 
     return (
-        <>
+        <div className="mt-8 sm:mt-0">
             <Head title="Masuk" />
 
             <Form
@@ -157,7 +157,7 @@ export default function Login({
                     {status}
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

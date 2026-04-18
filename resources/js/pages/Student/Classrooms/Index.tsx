@@ -105,9 +105,9 @@ export default function Index({ classrooms = [], myEnrollments = {}, filters }: 
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
                         <BookOpen size={12} /> Kurikulum Aktif 2026
                     </div>
-                    <h1 className="text-4xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter italic">
-                        Class <span className="text-emerald-500">Registry</span>
-                    </h1>
+                    {/* <h1 className="text-4xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter italic">
+                        Daftar <span className="text-emerald-500">Kelas</span>
+                    </h1> */}
                     <p className="text-neutral-500 dark:text-neutral-400 font-medium max-w-md">Eksplorasi dan manajemen pendaftaran mata pelajaran di seluruh departemen.</p>
                 </div>
 

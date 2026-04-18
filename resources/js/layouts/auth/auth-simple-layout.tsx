@@ -47,7 +47,7 @@ export default function AuthSimpleLayout({
             <div className="flex w-full lg:w-1/2 items-center justify-center p-8 md:p-12 relative">
                 {/* Mobile-only Logo (Muncul kalau layar kecil) */}
                 <div className="lg:hidden absolute top-8 left-1/2 -translate-x-1/2">
-                    <AppLogo />
+                    {/* <AppLogo /> */}
                 </div>
 
                 <div className="w-full max-w-[400px]">
