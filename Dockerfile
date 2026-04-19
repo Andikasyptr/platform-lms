@@ -2,6 +2,12 @@ FROM node:22-bookworm-slim AS frontend-builder
 
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        php-cli \
+        php-mbstring \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
