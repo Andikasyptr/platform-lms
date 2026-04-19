@@ -21,7 +21,7 @@ services:
 
   db:
     image: mariadb:10.5
-    container_name: cbt-db
+    container_name: classyra-db
     restart: unless-stopped
     env_file:
       - .env
