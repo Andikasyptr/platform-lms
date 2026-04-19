@@ -8,8 +8,8 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    // Kita ganti default-nya dari 'Laravel' ke 'LMSPRO'
-    'name' => env('APP_NAME', 'LMSPRO'),
+    // Kita ganti default-nya dari 'Laravel' ke 'ClassYra'
+    'name' => env('APP_NAME', 'ClassYra'),
 
     /*
     |--------------------------------------------------------------------------
