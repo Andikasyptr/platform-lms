@@ -15,29 +15,29 @@ use Illuminate\Http\RedirectResponse;
 class ClassroomController extends Controller
 {
     public function index(Request $request): Response
-{
-    $userId = auth()->id();
-    $search = $request->input('search');
+    {
+        $userId = auth()->id();
+        $search = $request->input('search');
 
-    // Pastikan menggunakan subject_assignments (pakai underscore)
-    $classrooms = Classroom::with(['subject_assignments.subject', 'subject_assignments.teacher'])
-        ->when($search, function ($query, $search) {
-            $query->where('name', 'like', "%{$search}%")
-                ->orWhere('code', 'like', "%{$search}%");
-        })
-        ->latest()
-        ->get();
+        $classrooms = Classroom::with(['subjectAssignments.subject', 'subjectAssignments.teacher'])
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->get();
 
-    $myEnrollments = Enrollment::where('user_id', $userId)
-        ->pluck('status', 'subject_assignment_id')
-        ->toArray();
+        $myEnrollments = Enrollment::where('user_id', $userId)
+            ->pluck('status', 'subject_assignment_id')
+            ->toArray();
 
-    return Inertia::render('Student/Classrooms/Index', [
-        'classrooms' => $classrooms,
-        'myEnrollments' => (object) $myEnrollments, 
-        'filters' => $request->only(['search']),
-    ]);
-}
+        return Inertia::render('Student/Classrooms/Index', [
+            'classrooms' => $classrooms,
+            'myEnrollments' => (object) $myEnrollments, 
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
     public function myClass(): Response
     {
         $userId = auth()->id();

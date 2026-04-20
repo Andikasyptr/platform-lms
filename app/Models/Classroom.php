@@ -39,9 +39,9 @@ class Classroom extends Model
         return $this->hasMany(User::class, 'classroom_id');
     }
 
-   // Ubah dari subjectAssignments menjadi subject_assignments
-    public function subject_assignments(): HasMany 
+    public function subjectAssignments(): HasMany
     {
+        // Pastikan nama model Target adalah SubjectAssignment
         return $this->hasMany(SubjectAssignment::class);
     }
 }
