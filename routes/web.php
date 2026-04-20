@@ -104,6 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/users/students', [UserController::class, 'storeStudent'])->name('admin.students.store');
             Route::put('/users/students/{user}', [UserController::class, 'updateStudent'])->name('admin.students.update');
             Route::delete('/users/students/{user}', [UserController::class, 'destroyStudent'])->name('admin.students.destroy');
+            
 
         // manajemen kelas 
             Route::get('/classrooms', [\App\Http\Controllers\Admin\ClassroomController::class, 'index'])->name('admin.classrooms.index');

@@ -91,4 +91,14 @@ public function storeStudent(Request $request)
 
     return back()->with('success', 'Akun siswa berhasil dibuat');
 }
+
+// app/Http/Controllers/Admin/UserController.php
+
+public function destroyStudent($id)
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return redirect()->back()->with('success', 'Akun siswa berhasil dihapus.');
+}
 }
