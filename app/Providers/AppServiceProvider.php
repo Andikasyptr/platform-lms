@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\URL; // <--- Tambahan untuk handle HTTPS
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,11 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Memaksa skema URL ke HTTPS jika aplikasi berjalan di environment production
-        if (app()->isProduction()) {
-            URL::forceScheme('https');
-        }
-
         $this->configureDefaults();
     }
 
