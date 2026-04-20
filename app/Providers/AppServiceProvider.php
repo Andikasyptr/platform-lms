@@ -23,14 +23,17 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
-        // 2. TAMBAHKAN INI: Paksa semua URL pakai HTTPS jika di production
-        if (app()->environment('production')) {
-            URL::forceScheme('https');
-        }
-
-        $this->configureDefaults();
+{
+    // Paksa HTTPS di level paling dasar
+    if (app()->environment('production')) {
+        \Illuminate\Support\Facades\URL::forceScheme('https');
+        
+        // Tambahkan baris di bawah ini untuk mengelabui request
+        $this->app['request']->server->set('HTTPS', 'on');
     }
+
+    $this->configureDefaults();
+}
 
     /**
      * Configure default behaviors for production-ready applications.
