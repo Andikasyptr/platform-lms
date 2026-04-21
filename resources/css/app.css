@@ -95,8 +95,13 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
+    --ck-z-default: 100;
+    --ck-z-modal: 1000;
 }
 
+.ck-body-wrapper {
+    z-index: 9999 !important;
+}
 .dark {
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);

@@ -162,39 +162,47 @@ export default function Show({ assignment, submissions }: Props) {
                                                     {getFileType(selectedSubmission.file_path) === 'pdf' ? (
                                                         <iframe 
                                                             src={`/storage/${selectedSubmission.file_path}#toolbar=0`} 
-                                                            className="w-full h-full"
+                                                            className="w-full h-full border-none"
                                                         />
                                                     ) : getFileType(selectedSubmission.file_path) === 'image' ? (
-                                                        <img 
-                                                            src={`/storage/${selectedSubmission.file_path}`} 
-                                                            className="w-full h-full object-contain" 
-                                                            alt="Submission" 
-                                                        />
+                                                        <div className="w-full h-full flex items-center justify-center p-4">
+                                                            <img 
+                                                                src={`/storage/${selectedSubmission.file_path}`} 
+                                                                className="max-w-full max-h-full object-contain rounded-xl" 
+                                                                alt="Submission Preview" 
+                                                            />
+                                                        </div>
                                                     ) : (
                                                         <div className="w-full h-full flex flex-col items-center justify-center p-10 text-center space-y-4">
-                                                            <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-full text-neutral-400">
-                                                                <FileText className="size-10" />
+                                                            <div className="p-6 bg-blue-50 dark:bg-blue-500/10 rounded-[2rem] text-blue-600 shadow-sm">
+                                                                <FileText className="size-12" />
                                                             </div>
-                                                            <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Format file ini tidak mendukung preview langsung.</p>
+                                                            <div>
+                                                                <p className="text-[10px] font-black text-neutral-900 dark:text-white uppercase tracking-[0.2em]">Dokumen Non-Preview</p>
+                                                                <p className="text-[9px] font-bold text-neutral-400 uppercase mt-1">Silakan download untuk memeriksa dokumen ini</p>
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 {/* Action Buttons */}
                                                 <div className="flex gap-3">
+                                                    {(getFileType(selectedSubmission.file_path) === 'pdf' || getFileType(selectedSubmission.file_path) === 'image') && (
+                                                        <a 
+                                                            href={`/storage/${selectedSubmission.file_path}`} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="flex-1 flex items-center justify-center gap-2 py-4 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-all shadow-sm"
+                                                        >
+                                                            <ExternalLink className="size-3" /> Fullscreen
+                                                        </a>
+                                                    )}
                                                     <a 
                                                         href={`/storage/${selectedSubmission.file_path}`} 
-                                                        target="_blank" 
-                                                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-all shadow-sm"
+                                                        download={`${selectedSubmission.user.name.replace(/\s+/g, '_')}_${assignment.title.replace(/\s+/g, '_')}`}
+                                                        className="flex-[2] flex items-center justify-center gap-2 py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20"
                                                     >
-                                                        <ExternalLink className="size-3" /> Buka Tab Baru
-                                                    </a>
-                                                    <a 
-                                                        href={`/storage/${selectedSubmission.file_path}`} 
-                                                        download 
-                                                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20"
-                                                    >
-                                                        <Download className="size-3" /> Download File
+                                                        <Download className="size-3" /> Download Berkas
                                                     </a>
                                                 </div>
                                             </div>

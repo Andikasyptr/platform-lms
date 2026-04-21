@@ -14,7 +14,7 @@ class SubmissionController extends Controller
 {
     $request->validate([
         'content' => 'nullable|string',
-        'file' => 'nullable|file|mimes:pdf,zip,jpg,png|max:10240', // Saya naikkan ke 10MB jika perlu
+        'file' => 'nullable|file|mimes:pdf,zip,jpg,png,doc,docx,xls,xlsx,ppt,pptx|max:10240', // Saya naikkan ke 10MB jika perlu
     ]);
 
     // Cari submission lama jika ada

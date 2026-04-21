@@ -28,17 +28,22 @@ export default function Show({ assignment, submission }: Props) {
     });
 
     const submitTask = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(`/student/assignments/${assignment.id}/submit`, {
-            forceFormData: true, 
-            preserveScroll: true,
-            onSuccess: () => {
-                setShowForm(false);
-                reset('file');
-            },
-        });
-    };
+    e.preventDefault();
 
+    // Gunakan post dengan konfigurasi forceFormData agar file terbaca sebagai multipart/form-data
+    post(`/student/assignments/${assignment.id}/submit`, {
+        forceFormData: true, // WAJIB ada buat kirim file
+        preserveScroll: true,
+        onSuccess: () => {
+            setShowForm(false);
+            reset('file');
+            // Opsional: lu bisa kasih toast sukses di sini
+        },
+        onError: (errors) => {
+            console.error(errors); // Biar lu tau kalau ada error validasi dari Laravel
+        }
+    });
+};
     const getFileType = (path: string) => {
         const ext = path.split('.').pop()?.toLowerCase();
         if (ext === 'pdf') return 'pdf';
