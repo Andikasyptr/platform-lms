@@ -180,49 +180,92 @@ export default function Show({ classroom, students, materials, assignments }: Pr
                         </div>
                     </section>
                 </div>
+{/* ASIDE WITH PROGRESS BARS (DI-GROUPING AGAR SATU SISWA SATU BARIS) */}
+{/* ASIDE WITH PROGRESS BARS (Satu Siswa Satu Progress) */}
+<aside className="lg:col-span-4 space-y-6">
+    <div className="flex items-center justify-between">
+        <h2 className="text-xl font-black text-neutral-900 dark:text-white uppercase tracking-tight">Status Siswa</h2>
+        <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 text-[10px] font-black rounded-lg uppercase tracking-widest">
+            {/* Menghitung siswa unik */}
+            {[...new Set(students.map(s => s.user?.name))].length} Siswa
+        </span>
+    </div>
 
-                {/* ASIDE WITH PROGRESS BARS (TIDAK GUA ILANGIN!) */}
-                <aside className="lg:col-span-4 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-black text-neutral-900 dark:text-white uppercase tracking-tight">Status Siswa</h2>
-                        <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-400 text-[10px] font-black rounded-lg uppercase tracking-widest">{students?.length || 0} Total</span>
-                    </div>
-                    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-[2.5rem] overflow-hidden shadow-sm">
-                        <div className="max-h-[700px] overflow-y-auto divide-y divide-neutral-100 dark:divide-neutral-800">
-                            {students.map((item: any) => (
-                                <div key={item.id} className="p-6 space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="size-10 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase">{item.user?.name?.charAt(0)}</div>
-                                            <p className="text-[11px] font-black text-neutral-900 dark:text-white uppercase truncate max-w-[100px]">{item.user?.name}</p>
-                                        </div>
-                                        <button onClick={() => handleKickStudent(item.id, item.user?.name)} className="p-2 text-neutral-300 hover:text-red-500"><UserMinus className="size-4" /></button>
+    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-[2.5rem] overflow-hidden shadow-sm">
+        <div className="max-h-[700px] overflow-y-auto divide-y divide-neutral-100 dark:divide-neutral-800">
+            {(() => {
+                // Proses penggabungan data duplikat secara langsung
+                const groupedStudents: any = {};
+                
+                students.forEach((s: any) => {
+                    const name = s.user?.name;
+                    if (!groupedStudents[name]) {
+                        groupedStudents[name] = { 
+                            ...s, 
+                            count: 1, 
+                            totalT: s.tugas_progress_percent || 0, 
+                            totalM: s.materi_progress_percent || 0 
+                        };
+                    } else {
+                        groupedStudents[name].totalT += s.tugas_progress_percent || 0;
+                        groupedStudents[name].totalM += s.materi_progress_percent || 0;
+                        groupedStudents[name].count += 1;
+                    }
+                });
+
+                return Object.values(groupedStudents).map((item: any) => {
+                    const avgT = Math.round(item.totalT / item.count);
+                    const avgM = Math.round(item.totalM / item.count);
+
+                    return (
+                        <div key={item.id} className="p-6 space-y-4 hover:bg-neutral-50/50 transition-colors">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="size-10 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase">
+                                        {item.user?.name?.charAt(0)}
                                     </div>
-                                    <div className="space-y-3 bg-neutral-50 dark:bg-neutral-950/50 p-4 rounded-2xl border border-neutral-100 dark:border-neutral-800">
-                                        <div className="space-y-1.5">
-                                            <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
-                                                <span className="text-neutral-400">Tugas</span>
-                                                <span className="text-blue-600">{item.tugas_progress_percent || 0}%</span>
-                                            </div>
-                                            <div className="h-1.5 w-full bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                                                <div className="h-full bg-blue-600 transition-all duration-500" style={{ width: `${item.tugas_progress_percent || 0}%` }} />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
-                                                <span className="text-neutral-400">Materi</span>
-                                                <span className="text-emerald-600">{item.materi_progress_percent || 0}%</span>
-                                            </div>
-                                            <div className="h-1.5 w-full bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                                                <div className="h-full bg-emerald-600 transition-all duration-500" style={{ width: `${item.materi_progress_percent || 0}%` }} />
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <p className="text-[11px] font-black text-neutral-900 dark:text-white uppercase truncate max-w-[120px]">
+                                            {item.user?.name}
+                                        </p>
+                                        <span className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest">
+                                            {item.count > 1 ? `${item.count} Mapel Diikuti` : '1 Mapel Diikuti'}
+                                        </span>
                                     </div>
                                 </div>
-                            ))}
+                                <button onClick={() => handleKickStudent(item.id, item.user?.name)} className="p-2 text-neutral-300 hover:text-red-500 transition-colors">
+                                    <UserMinus className="size-4" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-3 bg-neutral-50 dark:bg-neutral-950/50 p-4 rounded-2xl border border-neutral-100 dark:border-neutral-800">
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
+                                        <span className="text-neutral-400">Rata-rata Tugas</span>
+                                        <span className="text-blue-600">{avgT}%</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+                                        <div className="h-full bg-blue-600 transition-all duration-500" style={{ width: `${avgT}%` }} />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
+                                        <span className="text-neutral-400">Rata-rata Materi</span>
+                                        <span className="text-emerald-600">{avgM}%</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+                                        <div className="h-full bg-emerald-600 transition-all duration-500" style={{ width: `${avgM}%` }} />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </aside>
+                    );
+                });
+            })()}
+        </div>
+    </div>
+</aside>
             </div>
 
             {/* MODAL MATERI */}
