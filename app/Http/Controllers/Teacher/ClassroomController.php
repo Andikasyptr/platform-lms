@@ -8,9 +8,12 @@ use App\Models\Enrollment;
 use App\Models\Material;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
+use App\Notifications\NewContentNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
 
 class ClassroomController extends Controller
 {
@@ -103,7 +106,7 @@ class ClassroomController extends Controller
         ]);
     }
 
-    public function storeMaterial(Request $request)
+   public function storeMaterial(Request $request)
     {
         $request->validate([
             'subject_assignment_id' => 'required|exists:subject_assignments,id',
@@ -119,7 +122,8 @@ class ClassroomController extends Controller
             $filePath = $request->file('file')->store('materials', 'public');
         }
 
-        Material::create([
+        // 1. Simpan Materi
+        $material = Material::create([
             'subject_assignment_id' => $request->subject_assignment_id,
             'title' => $request->title,
             'description' => $request->description,
@@ -128,9 +132,20 @@ class ClassroomController extends Controller
             'file_path' => $filePath,
         ]);
 
-        return back()->with('success', 'Materi berhasil ditambahkan!');
-    }
+        // 2. Ambil semua siswa yang "approved" di kelas ini (lewat Enrollment)
+        $students = User::whereHas('enrollments', function ($query) use ($request) {
+            $query->where('subject_assignment_id', $request->subject_assignment_id)
+                  ->where('status', 'approved');
+        })->get();
 
+        // 3. Kirim Notifikasi Email
+        if ($students->count() > 0) {
+            Notification::send($students, new NewContentNotification($material, 'materi'));
+        }
+
+        return back()->with('success', 'Materi berhasil ditambahkan dan notifikasi terkirim!');
+    }
+    
     public function updateMaterial(Request $request, $id)
     {
         $material = Material::findOrFail($id);

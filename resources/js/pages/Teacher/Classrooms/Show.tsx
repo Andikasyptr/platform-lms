@@ -269,74 +269,120 @@ export default function Show({ classroom, students, materials, assignments }: Pr
             </div>
 
             {/* MODAL MATERI */}
-            {showMaterialForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-neutral-900 w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-                        <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center bg-white dark:bg-neutral-900">
-                            <h2 className="text-xl font-black uppercase tracking-tight">
-                                {editingMaterialId ? 'Edit' : 'Tambah'} <span className="text-emerald-600">Materi</span>
-                            </h2>
-                            <button onClick={closeMaterialModal} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full"><X className="size-5" /></button>
-                        </div>
-                        <form onSubmit={submitMaterial} className="p-8 space-y-6 max-h-[85vh] overflow-y-auto">
-                            <input type="text" placeholder="Judul Materi" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 font-bold text-neutral-900 dark:text-white" value={materialForm.data.title} onChange={e => materialForm.setData('title', e.target.value)} />
-                            <textarea placeholder="Ringkasan singkat" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 min-h-[80px]" value={materialForm.data.description} onChange={e => materialForm.setData('description', e.target.value)} />
-                            
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                {['text', 'video', 'file', 'link'].map(t => (
-                                    <button key={t} type="button" onClick={() => materialForm.setData('type', t as any)} className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${materialForm.data.type === t ? 'border-emerald-600 bg-emerald-50 text-emerald-600' : 'border-neutral-100 text-neutral-400'}`}>
-                                        <span className="text-[10px] font-black uppercase">{t}</span>
-                                    </button>
-                                ))}
-                            </div>
+{showMaterialForm && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-sm">
+        <div className="bg-white dark:bg-neutral-900 w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            {/* Header Modal */}
+            <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center bg-white dark:bg-neutral-900">
+                <h2 className="text-xl font-black uppercase tracking-tight">
+                    {editingMaterialId ? 'Edit' : 'Tambah'} <span className="text-emerald-600">Materi</span>
+                </h2>
+                <button onClick={closeMaterialModal} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full"><X className="size-5" /></button>
+            </div>
 
-                            <div className="space-y-2">
-                                {materialForm.data.type === 'file' ? (
-                                    <input type="file" onChange={e => materialForm.setData('file', e.target.files ? e.target.files[0] : null)} className="w-full text-xs" />
-                                ) : (
-                                    <textarea 
-                                        rows={8}
-                                        placeholder="Tulis isi materi atau URL di sini..."
-                                        className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-sm font-medium focus:ring-emerald-500 whitespace-pre-wrap"
-                                        value={materialForm.data.content}
-                                        onChange={e => materialForm.setData('content', e.target.value)}
-                                    />
-                                )}
-                            </div>
-                            <button type="submit" disabled={materialForm.processing} className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg">Simpan Materi</button>
-                        </form>
+            <form onSubmit={submitMaterial} className="p-8 space-y-6 max-h-[85vh] overflow-y-auto">
+                {/* JUDUL MATERI */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Judul Materi</label>
+                    <input type="text" placeholder="Contoh: Pengenalan Laravel Dasar" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 font-bold text-neutral-900 dark:text-white focus:ring-2 focus:ring-emerald-500" value={materialForm.data.title} onChange={e => materialForm.setData('title', e.target.value)} />
+                </div>
+
+                {/* RINGKASAN */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Ringkasan Singkat</label>
+                    <textarea placeholder="Berikan deskripsi singkat materi ini..." className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 min-h-[80px]" value={materialForm.data.description} onChange={e => materialForm.setData('description', e.target.value)} />
+                </div>
+                
+                {/* TIPE MATERI */}
+                <div className="space-y-3">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Tipe Konten</label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {['text', 'video', 'file', 'link'].map(t => (
+                            <button key={t} type="button" onClick={() => materialForm.setData('type', t as any)} className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${materialForm.data.type === t ? 'border-emerald-600 bg-emerald-50 text-emerald-600' : 'border-neutral-100 text-neutral-400 hover:border-neutral-200'}`}>
+                                <span className="text-[10px] font-black uppercase">{t}</span>
+                            </button>
+                        ))}
                     </div>
                 </div>
-            )}
 
+                {/* ISI KONTEN / FILE */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">
+                        {materialForm.data.type === 'file' ? 'Upload Dokumen' : 'Isi Materi / Link URL'}
+                    </label>
+                    {materialForm.data.type === 'file' ? (
+                        <div className="p-4 border-2 border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl bg-neutral-50 dark:bg-neutral-800/50">
+                            <input type="file" onChange={e => materialForm.setData('file', e.target.files ? e.target.files[0] : null)} className="w-full text-xs" />
+                        </div>
+                    ) : (
+                        <textarea 
+                            rows={8}
+                            placeholder={materialForm.data.type === 'video' ? 'Tempel link YouTube di sini...' : 'Tulis isi materi atau link di sini...'}
+                            className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-sm font-medium focus:ring-emerald-500 whitespace-pre-wrap"
+                            value={materialForm.data.content}
+                            onChange={e => materialForm.setData('content', e.target.value)}
+                        />
+                    )}
+                </div>
+
+                <button type="submit" disabled={materialForm.processing} className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-emerald-700 transition-all active:scale-[0.98]">
+                    {materialForm.processing ? 'Menyimpan...' : 'Simpan Materi'}
+                </button>
+            </form>
+        </div>
+    </div>
+)}
             {/* MODAL TUGAS */}
-            {showAssignmentForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-neutral-900 w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-                        <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center bg-white dark:bg-neutral-900">
-                            <h2 className="text-xl font-black uppercase tracking-tight">
-                                {editingAssignmentId ? 'Edit' : 'Buat'} <span className="text-blue-600">Tugas Baru</span>
-                            </h2>
-                            <button onClick={closeAssignmentModal} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full"><X className="size-5" /></button>
-                        </div>
-                        <form onSubmit={submitAssignment} className="p-8 space-y-6 max-h-[85vh] overflow-y-auto">
-                            <input type="text" placeholder="Judul Penugasan" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 font-bold text-neutral-900 dark:text-white" value={assignmentForm.data.title} onChange={e => assignmentForm.setData('title', e.target.value)} />
-                            <textarea 
-                                rows={6}
-                                placeholder="Tulis instruksi tugas di sini..."
-                                className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-sm font-medium whitespace-pre-wrap"
-                                value={assignmentForm.data.description}
-                                onChange={e => assignmentForm.setData('description', e.target.value)}
-                            />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="datetime-local" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-xs" value={assignmentForm.data.due_date} onChange={e => assignmentForm.setData('due_date', e.target.value)} />
-                                <input type="number" placeholder="Poin" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-xs" value={assignmentForm.data.points} onChange={e => assignmentForm.setData('points', parseInt(e.target.value))} />
-                            </div>
-                            <button type="submit" disabled={assignmentForm.processing} className="w-full py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg">Terbitkan Tugas</button>
-                        </form>
+{showAssignmentForm && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-sm">
+        <div className="bg-white dark:bg-neutral-900 w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center bg-white dark:bg-neutral-900">
+                <h2 className="text-xl font-black uppercase tracking-tight">
+                    {editingAssignmentId ? 'Edit' : 'Buat'} <span className="text-blue-600">Tugas Baru</span>
+                </h2>
+                <button onClick={closeAssignmentModal} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full"><X className="size-5" /></button>
+            </div>
+
+            <form onSubmit={submitAssignment} className="p-8 space-y-6 max-h-[85vh] overflow-y-auto">
+                {/* JUDUL TUGAS */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Judul Penugasan</label>
+                    <input type="text" placeholder="Contoh: Projek Akhir Semester" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 font-bold text-neutral-900 dark:text-white" value={assignmentForm.data.title} onChange={e => assignmentForm.setData('title', e.target.value)} />
+                </div>
+
+                {/* INSTRUKSI */}
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Instruksi Tugas</label>
+                    <textarea 
+                        rows={6}
+                        placeholder="Tulis instruksi pengerjaan tugas di sini..."
+                        className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-sm font-medium whitespace-pre-wrap"
+                        value={assignmentForm.data.description}
+                        onChange={e => assignmentForm.setData('description', e.target.value)}
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* DEADLINE */}
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Batas Pengumpulan (Deadline)</label>
+                        <input type="datetime-local" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-xs font-bold" value={assignmentForm.data.due_date} onChange={e => assignmentForm.setData('due_date', e.target.value)} />
+                    </div>
+
+                    {/* POIN */}
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] ml-1">Poin Maksimal</label>
+                        <input type="number" placeholder="Contoh: 100" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-xs font-bold" value={assignmentForm.data.points} onChange={e => assignmentForm.setData('points', parseInt(e.target.value))} />
                     </div>
                 </div>
-            )}
+
+                <button type="submit" disabled={assignmentForm.processing} className="w-full py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 transition-all active:scale-[0.98]">
+                    {assignmentForm.processing ? 'Sedang Menerbitkan...' : 'Terbitkan Tugas'}
+                </button>
+            </form>
+        </div>
+    </div>
+)}
         </div>
     );
 }

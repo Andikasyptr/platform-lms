@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory; 
+use Symfony\Component\Mailer\Transport\Dsn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,17 +26,28 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-{
-    // Paksa HTTPS di level paling dasar
-    if (app()->environment('production')) {
-        \Illuminate\Support\Facades\URL::forceScheme('https');
-        
-        // Tambahkan baris di bawah ini untuk mengelabui request
-        $this->app['request']->server->set('HTTPS', 'on');
-    }
+    {
+        // 1. Paksa HTTPS di level paling dasar (Produksi)
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+            
+            // Mengelabui request agar Symfony menyadari koneksi adalah HTTPS
+            $this->app['request']->server->set('HTTPS', 'on');
+        }
 
-    $this->configureDefaults();
-}
+        // 2. Registrasi Driver Brevo API
+        Mail::extend('brevo', function () {
+            return (new BrevoTransportFactory)->create(
+                new Dsn(
+                    'brevo+api',
+                    'default',
+                    config('services.brevo.key')
+                )
+            );
+        });
+
+        $this->configureDefaults();
+    }
 
     /**
      * Configure default behaviors for production-ready applications.

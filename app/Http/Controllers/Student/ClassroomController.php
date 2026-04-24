@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 
+
 class ClassroomController extends Controller
 {
     public function index(Request $request): Response
