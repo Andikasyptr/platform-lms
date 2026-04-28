@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use App\Notifications\NewStudentEnrollment;
+use App\Models\User;
 
 
 class ClassroomController extends Controller
@@ -104,22 +106,33 @@ class ClassroomController extends Controller
     public function enroll(Request $request): RedirectResponse
     {
         $request->validate(['subject_assignment_id' => 'required|exists:subject_assignments,id']);
-        $userId = auth()->id();
+        
+        /** @var \App\Models\User $student */
+        $student = auth()->user(); // Ambil object user biar bisa dikirim ke notif
         $assignmentId = $request->subject_assignment_id;
 
-        if (Enrollment::where('user_id', $userId)->where('subject_assignment_id', $assignmentId)->exists()) {
+        if (Enrollment::where('user_id', $student->id)->where('subject_assignment_id', $assignmentId)->exists()) {
             return back()->with('error', 'Kamu sudah mengirim permintaan pendaftaran.');
         }
 
+        // 1. Buat Pendaftaran
         Enrollment::create([
-            'user_id' => $userId,
+            'user_id' => $student->id,
             'subject_assignment_id' => $assignmentId,
             'status' => Enrollment::STATUS_PENDING,
         ]);
 
-        return back()->with('success', 'Pendaftaran berhasil dikirim!');
-    }
+        // 2. LOGIC NOTIFIKASI: Ambil data Guru dari SubjectAssignment
+        $assignment = SubjectAssignment::with(['teacher', 'subject'])->findOrFail($assignmentId);
+        $teacher = $assignment->teacher;
 
+        // 3. Kirim Email ke Guru jika data guru dan emailnya ada
+        if ($teacher && $teacher->email) {
+            $teacher->notify(new NewStudentEnrollment($student, $assignment));
+        }
+
+        return back()->with('success', 'Pendaftaran berhasil dikirim dan pemberitahuan telah dikirim ke Guru!');
+    }
     public function cancelEnroll($id): RedirectResponse
     {
         Enrollment::where('user_id', auth()->id())

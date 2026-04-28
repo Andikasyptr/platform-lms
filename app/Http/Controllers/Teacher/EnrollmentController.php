@@ -7,6 +7,7 @@ use App\Models\Enrollment;
 use App\Models\SubjectAssignment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Notifications\EnrollmentApprovedNotification;
 
 class EnrollmentController extends Controller
 {
@@ -38,33 +39,42 @@ class EnrollmentController extends Controller
     /**
      * Menyetujui atau Menolak pendaftaran siswa (hanya untuk status pending).
      */
-    public function updateStatus(Request $request)
+   public function updateStatus(Request $request)
     {
         $request->validate([
             'enrollment_id' => 'required|exists:enrollments,id',
             'status' => 'required|in:approved,rejected'
         ]);
 
-        $enrollment = Enrollment::findOrFail($request->enrollment_id);
+        // 1. Load Enrollment beserta semua data yang dibutuhkan untuk email
+        $enrollment = Enrollment::with([
+            'user', 
+            'subjectAssignment.subject', 
+            'subjectAssignment.classroom', 
+            'subjectAssignment.teacher'
+        ])->findOrFail($request->enrollment_id);
         
         // Proteksi: pastikan guru yang approve adalah pemilik kelas/mapel tersebut
-        $assignment = SubjectAssignment::findOrFail($enrollment->subject_assignment_id);
-        if ($assignment->teacher_id !== auth()->id()) {
+        if ($enrollment->subjectAssignment->teacher_id !== auth()->id()) {
             abort(403, 'Tindakan tidak diizinkan.');
         }
 
         if ($request->status === 'rejected') {
-            // Hapus data pendaftaran jika ditolak agar siswa bisa mendaftar ulang jika perlu
             $enrollment->delete();
             return back()->with('success', 'Pendaftaran siswa telah ditolak.');
         }
 
-        // Update status menjadi 'approved'
+        // 2. Update status menjadi 'approved'
         $enrollment->update(['status' => 'approved']);
 
-        return back()->with('success', 'Siswa berhasil bergabung ke kelas!');
-    }
+        // 3. LOGIC NOTIFIKASI: Kirim email ke siswa
+        $student = $enrollment->user;
+        if ($student && $student->email) {
+            $student->notify(new EnrollmentApprovedNotification($enrollment));
+        }
 
+        return back()->with('success', 'Siswa berhasil bergabung ke kelas dan email konfirmasi telah dikirim!');
+    }
     /**
      * FITUR KICK: Mengeluarkan siswa dari kelas.
      * Digunakan pada tombol "UserMinus" di halaman Dashboard Guru (Show.tsx).
