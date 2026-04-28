@@ -38,7 +38,7 @@ class NewStudentEnrollment extends Notification implements ShouldQueue // Tambah
             ->line('**Mata Pelajaran:** ' . $this->assignment->subject->name)
             ->line('---')
             ->line('Silakan tinjau permohonan ini melalui dashboard guru Anda untuk menyetujui atau menolak pendaftaran tersebut.')
-            ->action('Tinjau Pendaftaran', url('/teacher/classrooms'))
+            ->action('Tinjau Pendaftaran', url('/teacher/enrollments'))
             ->line('Terima kasih atas dedikasi Anda dalam mengajar.')
             ->salutation('Salam Hormat, ' . "\n" . 'Sistem Akademik ClassYra');
     }

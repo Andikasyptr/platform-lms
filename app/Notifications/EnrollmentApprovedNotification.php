@@ -41,7 +41,7 @@ class EnrollmentApprovedNotification extends Notification
             ->line('**Ruang Kelas:** ' . $classroomName)
             ->line('**Pengajar:** ' . $teacherName)
             ->line('---')
-            ->action('Mulai Belajar Sekarang', url('/student/my-class'))
+            ->action('Mulai Belajar Sekarang', url('/student/my-classrooms'))
             ->line('Pastikan Anda memeriksa jadwal dan materi perdana yang telah diunggah.')
             ->salutation('Salam Sukses, ' . "\n" . 'Tim Akademik ClassYra');
     }
