@@ -150,7 +150,9 @@ export default function Show({ material }: Props) {
                                 <div className="bg-neutral-50 dark:bg-neutral-800/40 p-8 rounded-[2.5rem] border border-neutral-100">
                                     {/* PERBAIKAN: Render HTML Deskripsi agar bisa baca bold/italic/list */}
                                     <div 
-                                        className="text-neutral-600 dark:text-neutral-300 text-lg leading-relaxed m-0 font-medium italic prose-sm dark:prose-invert max-w-none"
+                                        className="text-neutral-600 dark:text-neutral-300 text-lg leading-relaxed m-0 font-medium italic prose-sm dark:prose-invert max-w-none 
+                                        /* TAMBAHKAN KELAS BERIKUT */
+                                        whitespace-pre-line break-words overflow-wrap-anywhere"
                                         dangerouslySetInnerHTML={{ __html: material.description || 'Tidak ada deskripsi instruksi.' }}
                                     />
                                 </div>
@@ -163,7 +165,10 @@ export default function Show({ material }: Props) {
                                         </div>
                                         {/* PERBAIKAN: Render HTML Isi Materi agar gambar CKEditor muncul */}
                                         <div 
-                                            className="text-neutral-800 dark:text-neutral-200 leading-relaxed text-lg prose prose-neutral dark:prose-invert max-w-none 
+                                            className="text-neutral-800 dark:text-neutral-200 leading-relaxed text-lg 
+                                            prose prose-neutral dark:prose-invert max-w-none 
+                                            /* TAMBAHKAN CLASS DI BAWAH INI */
+                                            whitespace-pre-line break-words overflow-wrap-anywhere
                                             [&_img]:rounded-[2rem] [&_img]:shadow-xl [&_img]:my-8 [&_figure]:my-8"
                                             dangerouslySetInnerHTML={{ __html: material.content }} 
                                         />

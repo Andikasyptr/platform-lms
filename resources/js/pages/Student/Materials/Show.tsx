@@ -244,17 +244,26 @@ export default function Show({ material, is_completed }: Props) {
                                     <div className="w-2 h-8 bg-emerald-600 rounded-full" />
                                     <h2 className="text-neutral-900 dark:text-white font-black uppercase tracking-widest text-xl m-0">DESKRIPSI MATERI</h2>
                                 </div>
-                                <div className="bg-neutral-50 dark:bg-neutral-800/40 p-8 rounded-[2rem] border border-neutral-100 dark:border-neutral-800">
-                                    <p className="text-neutral-600 dark:text-neutral-300 text-lg leading-relaxed m-0 font-medium italic">
-                                        {material.description ? material.description.replace(/<[^>]*>?/gm, '') : "Silakan pelajari materi yang telah disediakan oleh guru pengampu di atas."}
-                                    </p>
-                                </div>
+                               <div className="bg-neutral-50 dark:bg-neutral-800/40 p-8 rounded-[2rem] border border-neutral-100 dark:border-neutral-800">
+                                <p className="text-neutral-600 dark:text-neutral-300 text-lg leading-relaxed m-0 font-medium italic whitespace-pre-line break-words">
+                                    {material.description ? material.description.replace(/<[^>]*>?/gm, '') : "Silakan pelajari materi yang telah disediakan oleh guru pengampu di atas."}
+                                </p>
+                            </div>
 
                                 {material.type === 'text' && (
-                                    <div className="mt-8">
+                                    <div className="mt-16 space-y-8">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-2 h-8 bg-emerald-600 rounded-full" />
+                                            <h2 className="text-neutral-900 dark:text-white font-black uppercase tracking-widest text-xl m-0">Isi Materi</h2>
+                                        </div>
+                                        {/* PERBAIKAN: Render HTML Isi Materi agar gambar CKEditor muncul */}
                                         <div 
-                                            className="text-neutral-800 dark:text-neutral-200 leading-relaxed text-lg ck-content"
-                                            dangerouslySetInnerHTML={{ __html: material.content }}
+                                            className="text-neutral-800 dark:text-neutral-200 leading-relaxed text-lg 
+                                            prose prose-neutral dark:prose-invert max-w-none 
+                                            /* TAMBAHKAN CLASS DI BAWAH INI */
+                                            whitespace-pre-line break-words overflow-wrap-anywhere
+                                            [&_img]:rounded-[2rem] [&_img]:shadow-xl [&_img]:my-8 [&_figure]:my-8"
+                                            dangerouslySetInnerHTML={{ __html: material.content }} 
                                         />
                                         {!completed && (
                                             <button 

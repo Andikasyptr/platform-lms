@@ -140,9 +140,15 @@ export default function Show({ classroom, students, materials, assignments }: Pr
                                         </div>
                                         <div className="space-y-1">
                                             <h4 className="font-black text-neutral-900 dark:text-white uppercase text-sm tracking-tight leading-none">{m.title}</h4>
-                                            {m.description && <p className="text-[11px] text-neutral-500 dark:text-neutral-400 line-clamp-1 italic font-medium max-w-md">{m.description}</p>}
-                                            <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mt-2 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 rounded w-fit">{m.type}</p>
-                                        </div>
+                                        {m.description && (
+                                                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 italic font-medium max-w-md whitespace-pre-line leading-relaxed">
+                                                    {m.description}
+                                                </p>
+                                            )}                                            
+                                        <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mt-2 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 rounded w-fit">
+                                                {m.type}
+                                            </p>                                        
+                                    </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <button onClick={() => handleEditMaterial(m)} className="p-2 text-neutral-400 hover:text-emerald-600 transition-colors"><Edit3 className="size-4" /></button>
@@ -318,9 +324,16 @@ export default function Show({ classroom, students, materials, assignments }: Pr
                         <textarea 
                             rows={8}
                             placeholder={materialForm.data.type === 'video' ? 'Tempel link YouTube di sini...' : 'Tulis isi materi atau link di sini...'}
-                            className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 rounded-xl p-4 text-sm font-medium focus:ring-emerald-500 whitespace-pre-wrap"
+                            /* 
+                            TAMBAHKAN: 
+                            1. whitespace-pre-wrap: Memastikan baris baru & spasi dirender
+                            2. break-words: Memastikan kata panjang tidak menabrak batas kanan
+                            3. overflow-y-auto: Agar muncul scroll vertical jika teks sangat panjang
+                            */
+                            className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-sm font-medium focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none whitespace-pre-wrap break-words overflow-y-auto"
                             value={materialForm.data.content}
                             onChange={e => materialForm.setData('content', e.target.value)}
+                            wrap="soft" 
                         />
                     )}
                 </div>
